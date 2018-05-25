@@ -1,0 +1,101 @@
+DROP DATABASE IF EXISTS hotel;
+
+CREATE DATABASE hotel CHARACTER SET 'UTF8';
+
+USE hotel;
+
+
+
+CREATE TABLE roombed (
+	`id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` VARCHAR (20) NOT NULL
+)ENGINE=InnoDB;
+
+CREATE TABLE bathroom (
+	`id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` VARCHAR (20) NOT NULL
+)ENGINE=InnoDB;
+
+CREATE TABLE room (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` VARCHAR(55) NOT NULL,
+	`price` INTEGER NOT NULL,
+	`superficy` INTEGER NOT NULL,
+	`view` VARCHAR(55) NOT NULL,
+	`mobilty` BOOLEAN,
+	`floor` SMALLINT,
+	`roombed` SMALLINT UNSIGNED NOT NULL,
+	CONSTRAINT fk_roombed_number
+		FOREIGN KEY (`roombed`)
+		REFERENCES `roombed` (id),
+	`bathroom` SMALLINT UNSIGNED NOT NULL,
+	CONSTRAINT fk_bathroom_number
+		FOREIGN KEY (`bathroom`)
+		REFERENCES `bathroom` (id)	
+)ENGINE=InnoDB;
+
+CREATE TABLE customer (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` VARCHAR(55) NOT NULL,
+	`firstname` VARCHAR(55) NOT NULL,
+	`address` VARCHAR(55) NOT NULL,
+	`phone` INTEGER NOT NULL,
+	`email` VARCHAR(55) NOT NULL,
+	`password` TEXT NOT NULL
+)ENGINE=InnoDB;
+
+
+CREATE TABLE booking_status (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`paid` BOOLEAN,
+	`canceled` BOOLEAN,
+	`in_progress` BOOLEAN
+)ENGINE=InnoDB;
+
+CREATE TABLE servicecategory (
+	`id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` VARCHAR (55) NOT NULL
+)ENGINE=InnoDB;
+
+CREATE TABLE service (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` VARCHAR (55) NOT NULL,
+	`price` INTEGER NOT NULL,
+	`description` TEXT NOT NULL,
+	`servicecategory` SMALLINT UNSIGNED NOT NULL,
+	CONSTRAINT fk_servicecategory_number
+		FOREIGN KEY (`servicecategory`)
+		REFERENCES `servicecategory` (id)
+)ENGINE=InnoDB;
+
+
+CREATE TABLE roomservice (
+	`id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`room` INTEGER UNSIGNED NOT NULL,
+	CONSTRAINT fk_room_number
+		FOREIGN KEY (`room`)
+		REFERENCES `room` (id),
+	`service` INTEGER UNSIGNED NOT NULL,
+	CONSTRAINT fk_service_number
+		FOREIGN KEY (`service`)
+		REFERENCES `service` (id)	
+)ENGINE=InnoDB;
+
+CREATE TABLE booking (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`check_in` DATE NOT NULL,
+	`check_out` DATE NOT NULL,
+	`customer` INTEGER UNSIGNED NOT NULL,	
+	CONSTRAINT fk_customer_number
+		FOREIGN KEY (`customer`)
+		REFERENCES `customer` (id),
+	`booking_status` INTEGER UNSIGNED NOT NULL,	
+	CONSTRAINT fk_booking_status_number
+		FOREIGN KEY (`booking_status`)
+		REFERENCES `booking_status` (id),
+	`roomservice` SMALLINT UNSIGNED NOT NULL,
+	CONSTRAINT fk_roomservice_number
+		FOREIGN KEY (`roomservice`)	
+		REFERENCES `roomservice` (id)
+)ENGINE=InnoDB;
+
